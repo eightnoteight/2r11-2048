@@ -26,31 +26,6 @@ int boardcount()
 				pint++;
 	return pint;
 }
-void randboard()
-{
-	int f,s,i,p;
-	static call=1;
-	if (call--)
-		srand(time(NULL));
-
-	f=rand()%16;
-	board[f/4][f%4]=2;
-	s=rand()%15;
-	p=0;
-	while(true)
-	{
-		if (board[p/4][p%4])
-		{
-			p++;
-			s++;
-		}
-		if (p==s)
-			break;
-		p++;
-	}
-	board[p/4][p%4]=2;
-	return ;
-}
 int boardcheck()
 {
 	return 0;
@@ -87,20 +62,17 @@ void sumsitup(int* p, int* q, int* r, int* s)
 }
 void randinsertboard()
 {
+	assert((16-nzcb())!=0);
 	int s=rand()%(16-nzcb());
 	int p=0;
-	while(true)
+	for(p=0;p<=s;++p)
 	{
 		if (board[p/4][p%4])
 		{
-			p++;
 			s++;
 		}
-		if (p==s)
-			break;
-		p++;
 	}
-	board[p/4][p%4]=2;
+	board[s/4][s%4]=2;
 }
 int nzcb()
 {
@@ -119,13 +91,12 @@ inline void bunchcall(int* p, int* q, int* r, int* s)
 boool gameinit()
 {
 	int c;
-	int co;
 	int i;
+	randinsertboard();
+	randinsertboard();
 	printboard();
-	randboard();
 	while((c=getch())!=27)
 	{
-		co=boardcount();
 		switch(c)
 		{
 			case UP_KEY:
@@ -178,6 +149,7 @@ int main(int argc, char const *argv[])
 	curs_set(0);
 	keypad(stdscr,TRUE);
 	getmaxyx(stdscr,row,col);
+	srand(time(NULL));
 	if (gameinit())
 		Winner();
 	else
