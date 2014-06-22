@@ -30,6 +30,26 @@ int boardcheck()
 {
 	return 0;
 }
+void randinsertboard()
+{
+	if ((16-nzcb())==0)
+		return;
+	/*assert((16-nzcb())!=0);/* remove the assert after checking checkboardfunction() */
+	int s=rand()%(16-nzcb()),p;
+	for(p=0;p<=s;++p)
+		if (board[p/4][p%4])
+			s++;
+	board[s/4][s%4]=2;
+}
+int nzcb()
+{
+	int nonz=0,i,j;
+	for (i = 0; i < 4; ++i)
+		for (j = 0; j < 4; ++j)
+			if (board[i][j])
+				nonz++;
+	return nonz;
+}
 void zerodrag(int* p, int* q, int* r, int* s)
 {
 	int* pint[5]={p,q,r,s};
@@ -59,29 +79,6 @@ void sumsitup(int* p, int* q, int* r, int* s)
 			*pint[i+1]=0;
 			zerodrag(p,q,r,s);
 		}
-}
-void randinsertboard()
-{
-	assert((16-nzcb())!=0);
-	int s=rand()%(16-nzcb());
-	int p=0;
-	for(p=0;p<=s;++p)
-	{
-		if (board[p/4][p%4])
-		{
-			s++;
-		}
-	}
-	board[s/4][s%4]=2;
-}
-int nzcb()
-{
-	int nonz=0,i,j;
-	for (i = 0; i < 4; ++i)
-		for (j = 0; j < 4; ++j)
-			if (board[i][j])
-				nonz++;
-	return nonz;
 }
 inline void bunchcall(int* p, int* q, int* r, int* s)
 {
