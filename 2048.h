@@ -13,10 +13,9 @@
 #include <setjmp.h>
 #include <signal.h>
 #include <ncurses.h>
-
 int row,col;
+char hash[17];
 typedef enum { False, True } boool;
-
 int board[4][4] = {
 	{0,0,0,0},
 	{0,0,0,0},

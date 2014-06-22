@@ -10,12 +10,8 @@ void printboard()
 {
 	int i,j;
 	for (i = 0; i < 4; ++i)
-	{
 		for (j = 0; j < 4; ++j)
-		{
 			mvprintw(((row-9)/2) + i*2,((col-32)/2) + j*10,"%d   ", board[i][j]);
-		}
-	}
 }
 int boardcount()
 {
@@ -85,15 +81,27 @@ inline void bunchcall(int* p, int* q, int* r, int* s)
 	zerodrag(p,q,r,s);
 	sumsitup(p,q,r,s);
 }
+char* hashgen()
+{
+	int i;
+	for (i = 0; i < 16; ++i)
+	{
+		hash[i]=board[i/4][i%4]+48;
+	}
+	hash[16]='\0';
+	return hash;
+}
 boool gameinit()
 {
 	int c;
 	int i;
+	char hashi[17];
 	randinsertboard();
 	randinsertboard();
 	printboard();
 	while((c=getch())!=27)
 	{
+		strcpy(hashi,hashgen());
 		switch(c)
 		{
 			case UP_KEY:
@@ -113,7 +121,8 @@ boool gameinit()
 					bunchcall(&board[i][3],&board[i][2],&board[i][1],&board[i][0]);
 				break;		
 		}
-		randinsertboard();
+		if (strcmp(hashi,hashgen())!=0)
+			randinsertboard();
 		printboard();
 		switch(boardcheck())
 		{
