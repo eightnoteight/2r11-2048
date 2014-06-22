@@ -13,7 +13,7 @@ void printboard()
 	{
 		for (j = 0; j < 4; ++j)
 		{
-			mvprintw(((row-9)/2) + i*2,((col-32)/2) + j*8,"%d", board[i][j]);
+			mvprintw(((row-9)/2) + i*2,((col-32)/2) + j*10,"%d   ", board[i][j]);
 		}
 	}
 }
@@ -25,166 +25,6 @@ int boardcount()
 			if (board[i][j])
 				pint++;
 	return pint;
-}
-void zerodrag()
-{
-	for (i = 0; i < 4; ++i)
-	{
-		/*drag out the non zero's*/
-		for (j = 0; j < 4; ++j)
-			if (board[j][i]==0)
-				for (k = j+1; k < 4; ++k)
-				{
-					board[k-1]=board[k];
-					board[k]=0;
-				}
-	}
-}
-void boardup(int a)
-{
-	int i,p,s;
-	for (i = 0; i < 4; ++i)
-	{
-		/*drag out the non zero's*/
-		zerodrag();/* i think it works without this line */
-		for (j = 1; j < 4; ++j)
-		{
-			if (board[j][i]==board[j-1][i])
-				board[j-1][i]*=2;
-			zerodrag();
-		}
-	}
-	s=rand()%(16-a);
-	p=0;
-	while(true)
-	{
-		if (p==s)
-			break;
-		p++;
-		if (board[p/4][p%4])
-		{
-			p++;
-			s++;
-		}
-	}
-	board[p/4][p%4]=2;
-}
-void boarddown(int a)
-{
-	int i,p,s;
-	for (i = 0; i < 4; ++i)
-	{
-		if(board[3][i]==board[2][i])
-		{
-			board[3][i] += board[2][i];
-			board[2][i] = board[1][i];
-			board[1][i] = board[0][i];
-			board[0][i] = 0;
-		}
-		if (board[2][i]==board[1][i])
-		{
-			board[2][i] += board[1][i];
-			board[1][i] = board[0][i];
-			board[0][i] = 0;
-		}
-		if (board[1][i]==board[0][i])
-		{
-			board[1][i] += board[0][i];
-			board[0][i] = 0;
-		}
-	}
-	s=rand()%(16-a);
-	p=0;
-	while(true)
-	{
-		if (p==s)
-			break;
-		p++;
-		if (board[p/4][p%4])
-		{
-			p++;
-			s++;
-		}
-	}
-	board[p/4][p%4]=2;
-}
-void boardleft(int a)
-{
-	int i,p,s;
-	for (i = 0; i < 4; ++i)
-	{
-		if(board[i][0]==board[i][1])
-		{
-			board[i][0] += board[i][1];
-			board[i][1] = board[i][2];
-			board[i][2] = board[i][3];
-			board[i][3] = 0;
-		}
-		if (board[i][1]==board[i][2])
-		{
-			board[i][1] += board[i][2];
-			board[i][2] = board[i][3];
-			board[i][3] = 0;
-		}
-		if (board[i][2]==board[i][3])
-		{
-			board[i][2] += board[i][3];
-			board[i][3] = 0;
-		}
-	}
-	s=rand()%(16-a);
-	p=0;
-	while(true)
-	{
-		if (p==s)
-			break;
-		p++;
-		if (board[p/4][p%4])
-		{
-			p++;
-			s++;
-		}
-	}
-	board[p/4][p%4]=2;
-}
-void boardright(int a)
-{
-	int i,p,s;
-	for (i = 0; i < 4; ++i)
-	{
-		if(board[i][3]==board[i][2])
-		{
-			board[i][3] += board[i][2];
-			board[i][2] = board[i][1];
-			board[i][1] = board[i][0];
-			board[i][0] = 0;
-		}
-		if (board[i][2]==board[i][1])
-		{
-			board[i][2] += board[i][1];
-			board[i][1] = board[i][0];
-			board[i][0] = 0;
-		}
-		if (board[i][1]==board[i][0])
-		{
-			board[i][1] += board[i][0];
-			board[i][0] = 0;
-		}
-	}
-	s=rand()%(16-a);
-	p=0;
-	while(true)
-	{
-		if (p==s)
-			break;
-		p++;
-		if (board[p/4][p%4])
-		{
-			p++;
-			s++;
-		}
-	}
-	board[p/4][p%4]=2;
 }
 void randboard()
 {
@@ -199,14 +39,14 @@ void randboard()
 	p=0;
 	while(true)
 	{
-		if (p==s)
-			break;
-		p++;
 		if (board[p/4][p%4])
 		{
 			p++;
 			s++;
 		}
+		if (p==s)
+			break;
+		p++;
 	}
 	board[p/4][p%4]=2;
 	return ;
@@ -215,10 +55,72 @@ int boardcheck()
 {
 	return 0;
 }
+void zerodrag(int* p, int* q, int* r, int* s)
+{
+	int* pint[5]={p,q,r,s};
+	int j,k;
+	for (j = 0; j < 4; ++j)
+	{
+		k=j;
+		while((k!=4)&&((*pint[k])==0))
+			k++;
+		if (k==4)
+			break;
+		swap(pint[j],pint[k]);
+	}
+}
+void sumsitup(int* p, int* q, int* r, int* s)
+{
+	int* pint[5]={p,q,r,s};
+	int i;
+	int nzc=0; /* nzc is non zero count */
+	for (i = 0; i < 4; ++i)
+		if (*pint[i])
+			nzc++;
+	for (i = 0; i < nzc-1; ++i)
+		if (*pint[i]==*pint[i+1])
+		{
+			*pint[i]*=2;
+			*pint[i+1]=0;
+			zerodrag(p,q,r,s);
+		}
+}
+void randinsertboard()
+{
+	int s=rand()%(16-nzcb());
+	int p=0;
+	while(true)
+	{
+		if (board[p/4][p%4])
+		{
+			p++;
+			s++;
+		}
+		if (p==s)
+			break;
+		p++;
+	}
+	board[p/4][p%4]=2;
+}
+int nzcb()
+{
+	int nonz=0,i,j;
+	for (i = 0; i < 4; ++i)
+		for (j = 0; j < 4; ++j)
+			if (board[i][j])
+				nonz++;
+	return nonz;
+}
+inline void bunchcall(int* p, int* q, int* r, int* s)
+{
+	zerodrag(p,q,r,s);
+	sumsitup(p,q,r,s);
+}
 boool gameinit()
 {
 	int c;
 	int co;
+	int i;
 	printboard();
 	randboard();
 	while((c=getch())!=27)
@@ -227,18 +129,23 @@ boool gameinit()
 		switch(c)
 		{
 			case UP_KEY:
-				boardup(co);
+				for(i=0;i<4;++i)
+					bunchcall(&board[0][i],&board[1][i],&board[2][i],&board[3][i]);
 				break;
 			case DOWN_KEY:
-				boarddown(co);
+				for(i=0;i<4;++i)
+					bunchcall(&board[3][i],&board[2][i],&board[1][i],&board[0][i]);
 				break;
 			case LEFT_KEY:
-				boardleft(co);
+				for(i=0;i<4;++i)
+					bunchcall(&board[i][0],&board[i][1],&board[i][2],&board[i][3]);
 				break;
 			case RIGHT_KEY:
-				boardright(co);
+				for(i=0;i<4;++i)
+					bunchcall(&board[i][3],&board[i][2],&board[i][1],&board[i][0]);
 				break;		
 		}
+		randinsertboard();
 		printboard();
 		switch(boardcheck())
 		{
