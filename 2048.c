@@ -11,7 +11,50 @@ void printboard()
 	int i,j;
 	for (i = 0; i < 4; ++i)
 		for (j = 0; j < 4; ++j)
-			mvprintw(((row-9)/2) + i*2,((col-32)/2) + j*10,"%d   ", board[i][j]);
+        {
+            switch(board[i][j])
+            {
+                case 0:
+                    attron(COLOR_PAIR(7)|A_DIM);
+                    break;
+                case 2:
+                    attron(COLOR_PAIR(1)|A_ITALIC);
+                    break;
+                case 4:
+                    attron(COLOR_PAIR(2)|A_ITALIC);
+                    break;
+                case 8:
+                    attron(COLOR_PAIR(3)|A_ITALIC);
+                    break;
+                case 16:
+                    attron(COLOR_PAIR(4)|A_ITALIC);
+                    break;
+                case 32:
+                    attron(COLOR_PAIR(5)|A_ITALIC);
+                    break;
+                case 64:
+                    attron(COLOR_PAIR(1)|A_BOLD|A_ITALIC);
+                    break;
+                case 128:
+                    attron(COLOR_PAIR(2)|A_BOLD|A_ITALIC);
+                    break;
+                case 256:
+                    attron(COLOR_PAIR(3)|A_BOLD|A_ITALIC);
+                    break;
+                case 512:
+                    attron(COLOR_PAIR(4)|A_BOLD|A_ITALIC);
+                    break;
+                case 1024:
+                    attron(COLOR_PAIR(5)|A_BOLD|A_ITALIC);
+                    break;
+                case 2048:
+                    attron(COLOR_PAIR(6)|A_BOLD|A_ITALIC|A_UNDERLINE);
+                    break;
+            }
+			mvprintw(((row-9)/2) + i*2,((col-32)/2) + j*10,"%d\t",
+                    board[i][j]);
+            attrset(0);
+        }     
 }
 int boardcount()
 {
@@ -22,15 +65,38 @@ int boardcount()
 				pint++;
 	return pint;
 }
+boool legalmoves()
+{
+    int i,j;
+    for (i = 0; i < 4; i++) 
+        for (j = 0; j < 3; j++) 
+            if (board[i][j] == board[i][j+1])
+                return 1;
+    for (i = 0; i < 4; i++) 
+        for (j = 0; j < 3; j++) 
+            if (board[j][i] == board[j][i+1])
+                return 1;
+    return 0;
+}
 int boardcheck()
 {
+    int i,j;
+    for (i = 0; i < 4; ++i)
+        for (j = 0; j < 4; ++j)
+        {
+            if (board[i][j] == 2048)
+                return 1;
+        }
+    if (nzcb() == 16 && !legalmoves())
+        return -1;
 	return 0;
 }
 void randinsertboard()
 {
 	if ((16-nzcb())==0)
 		return;
-	/*assert((16-nzcb())!=0);/* remove the assert after checking checkboardfunction() */
+	/*assert((16-nzcb())!=0); remove the assert after 
+     * checking checkboardfunction() */
 	int s=rand()%(16-nzcb()),p;
 	for(p=0;p<=s;++p)
 		if (board[p/4][p%4])
@@ -106,19 +172,31 @@ boool gameinit()
 		{
 			case UP_KEY:
 				for(i=0;i<4;++i)
-					bunchcall(&board[0][i],&board[1][i],&board[2][i],&board[3][i]);
+					bunchcall(&board[0][i],
+                              &board[1][i],
+                              &board[2][i],
+                              &board[3][i]);
 				break;
 			case DOWN_KEY:
 				for(i=0;i<4;++i)
-					bunchcall(&board[3][i],&board[2][i],&board[1][i],&board[0][i]);
+					bunchcall(&board[3][i],
+                              &board[2][i],
+                              &board[1][i],
+                              &board[0][i]);
 				break;
 			case LEFT_KEY:
 				for(i=0;i<4;++i)
-					bunchcall(&board[i][0],&board[i][1],&board[i][2],&board[i][3]);
+					bunchcall(&board[i][0],
+                              &board[i][1],
+                              &board[i][2],
+                              &board[i][3]);
 				break;
 			case RIGHT_KEY:
 				for(i=0;i<4;++i)
-					bunchcall(&board[i][3],&board[i][2],&board[i][1],&board[i][0]);
+					bunchcall(&board[i][3],
+                              &board[i][2],
+                              &board[i][1],
+                              &board[i][0]);
 				break;		
 		}
 		if (strcmp(hashi,hashgen())!=0)
@@ -137,6 +215,7 @@ boool gameinit()
 				break;/*not required*/
 		}
 	}
+    return 0;
 }
 void Winner(){
 	clear();
@@ -150,6 +229,14 @@ void Loser(){
 int main(int argc, char const *argv[])
 {
 	initscr();
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(4, COLOR_BLUE, COLOR_BLACK);
+    init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(6, COLOR_CYAN, COLOR_BLACK);
+    init_pair(7, COLOR_WHITE, COLOR_BLACK);
 	raw();
 	noecho();
 	curs_set(0);
