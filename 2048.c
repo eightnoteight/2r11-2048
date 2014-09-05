@@ -78,6 +78,15 @@ boool legalmoves()
                 return 1;
     return 0;
 }
+int nzcb()
+{
+	int nonz=0,i,j;
+	for (i = 0; i < 4; ++i)
+		for (j = 0; j < 4; ++j)
+			if (board[i][j])
+				nonz++;
+	return nonz;
+}
 int boardcheck()
 {
     int i,j;
@@ -102,15 +111,6 @@ void randinsertboard()
 		if (board[p/4][p%4])
 			s++;
 	board[s/4][s%4]=2;
-}
-int nzcb()
-{
-	int nonz=0,i,j;
-	for (i = 0; i < 4; ++i)
-		for (j = 0; j < 4; ++j)
-			if (board[i][j])
-				nonz++;
-	return nonz;
 }
 void zerodrag(int* p, int* q, int* r, int* s)
 {
