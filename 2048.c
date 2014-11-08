@@ -51,7 +51,7 @@ void printboard()
                     attron(COLOR_PAIR(6)|A_BOLD|A_ITALIC|A_UNDERLINE);
                     break;
             }
-			mvprintw(((row-9)/2) + i*2,((col-32)/2) + j*10,"%d\t",
+			mvprintw(((row-9)/2) + i*2,((col-32)/2) + j*10,"%d    \t",
                     board[i][j]);
             attrset(0);
         }     
