@@ -1,0 +1,30 @@
+include ~/toolsets/gcc/gcc-app.hsl
+
+var sources type list;
+var includes type list;
+var cflags type list;
+var libraries type list;
+var ldflags type list;
+
+project 2048 : toolset "gcc-c-app" : $sources, $includes, $cflags, $libraries, $ldflags, "2048";
+
+2048.prologue() {
+    var exit_code type int;
+    $exit_code = 1;
+    if (hefesto.sys.cd("accacia/src")) {
+        $exit_code = hefesto.sys.forge("accacia", "Forgefile.hsl", "--obj-output-dir=../obj --bin-output-dir=../lib");
+        hefesto.sys.cd("../..");
+    }
+    if ($exit_code != 0) {
+        hefesto.project.abort(1);
+    }
+    $includes = hefesto.sys.get_option("includes");
+    $includes.add_item("accacia/src");
+    $cflags = hefesto.sys.get_option("cflags");
+    $libraries = hefesto.sys.get_option("libraries");
+    $libraries.add_item("accacia/lib/");
+    $ldflags = hefesto.sys.get_option("ldflags");
+    $ldflags.add_item("-lncurses");
+    $ldflags.add_item("-laccacia");
+    $sources.ls(".*\\.c$");
+}
