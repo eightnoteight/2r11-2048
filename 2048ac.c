@@ -1,6 +1,8 @@
 #include "2048.h"
 #include "2048ac.h"
 
+extern int Moves, Max;
+
 void ac_printboard() {
     int i,j, x, y = 10;
     int bkcolor = 0;
@@ -69,6 +71,7 @@ void ac_printboard() {
             accacia_gotoxy(x + 2, y + 2);printf("%.4d", board[i][j]);
             accacia_screennormalize();
             accacia_gotoxy(1,1);printf("w = Up / s = Down / a = Left / d = Right / ESC = Quit\n");
+            accacia_gotoxy(1,2);printf("Moves: % 2d,  Max: % 4d\n", Moves, Max);
             accacia_delline();
         }
     }
@@ -87,21 +90,25 @@ int ac_gameinit() {
 	    strcpy(hashi,hashgen());
 	    switch(c) {
 	        case UP_KEY:
+		    Moves++;
 		    for(i=0;i<4;++i) {
 		        bunchcall(&board[0][i], &board[1][i], &board[2][i], &board[3][i]);
                     }
 		    break;
 	        case DOWN_KEY:
+		    Moves++;
 		    for(i=0;i<4;++i) {
 		        bunchcall(&board[3][i], &board[2][i], &board[1][i], &board[0][i]);
                     }
 		    break;
 		case LEFT_KEY:
+		    Moves++;
 		    for(i=0;i<4;++i) {
 		        bunchcall(&board[i][0], &board[i][1], &board[i][2], &board[i][3]);
                     }
 		    break;
 		case RIGHT_KEY:
+		    Moves++;
 		    for(i=0;i<4;++i) {
 		        bunchcall(&board[i][3], &board[i][2], &board[i][1], &board[i][0]);
                     }

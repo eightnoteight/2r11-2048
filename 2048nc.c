@@ -2,6 +2,8 @@
 #include <accacia.h>
 #include "2048nc.h"
 
+extern int Moves, Max;
+
 void nc_printboard()
 {
 	int i,j;
@@ -51,6 +53,8 @@ void nc_printboard()
                     board[i][j]);
             attrset(0);
         }
+    mvprintw(1,(col-9)/2, "2r11-2048");
+    mvprintw(row-2,(col-23)/2, "Moves: % 2d  |  Max: % 4d", Moves, Max);
 }
 
 int nc_gameinit()
@@ -67,6 +71,7 @@ int nc_gameinit()
 		switch(c)
 		{
 			case UP_KEY:
+				Moves++;
 				for(i=0;i<4;++i)
 					bunchcall(&board[0][i],
                               &board[1][i],
@@ -74,6 +79,7 @@ int nc_gameinit()
                               &board[3][i]);
 				break;
 			case DOWN_KEY:
+				Moves++;
 				for(i=0;i<4;++i)
 					bunchcall(&board[3][i],
                               &board[2][i],
@@ -81,6 +87,7 @@ int nc_gameinit()
                               &board[0][i]);
 				break;
 			case LEFT_KEY:
+				Moves++;
 				for(i=0;i<4;++i)
 					bunchcall(&board[i][0],
                               &board[i][1],
@@ -88,6 +95,7 @@ int nc_gameinit()
                               &board[i][3]);
 				break;
 			case RIGHT_KEY:
+				Moves++;
 				for(i=0;i<4;++i)
 					bunchcall(&board[i][3],
                               &board[i][2],
@@ -97,7 +105,6 @@ int nc_gameinit()
 		}
 		if (strcmp(hashi,hashgen())!=0)
 			randinsertboard();
-		nc_printboard();
 		switch(boardcheck())
 		{
 			case 1:
@@ -106,10 +113,8 @@ int nc_gameinit()
 			case -1:
 				return 0;
 				break;/*not required*/
-			case 0:
-				continue;
-				break;/*not required*/
 		}
+		nc_printboard();
 	}
     return 0;
 }
