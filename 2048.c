@@ -7,6 +7,9 @@
 
 int row,col;
 
+int Moves = 0;
+int Max = 2;
+
 char hash[17];
 
 int board[4][4] = {
@@ -91,6 +94,8 @@ int boardcheck() {
     for (i = 0; i < 4; ++i)
         for (j = 0; j < 4; ++j)
         {
+        	if (board[i][j] > Max)
+        		Max = board[i][j];
             if (board[i][j] == 2048)
                 return 1;
         }
